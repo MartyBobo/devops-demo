@@ -5,9 +5,8 @@ on:
   #Trigger the workflow on push from the master/main branch
   push:
     branches: [ master]
-    
+
 jobs:
-  # Build job
   build:
     name: My First Pipeline
    # Run on Ubuntu using the latest version
@@ -17,4 +16,4 @@ jobs:
       # Check-out your repository
       - uses: actions/checkout@v3
       - name: Run a one-line script
-       run: echo "Continuous Integration"
+        run: echo "Continuous Integration"
