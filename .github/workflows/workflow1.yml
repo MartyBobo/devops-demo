@@ -16,8 +16,5 @@ jobs:
     steps: 
       # Check-out your repository
       - uses: actions/checkout@v3 
-      - name: To Show Error
-        run: echo "Should fail at this point ..." ; exit 1
-
       - name: Run a one-line script 
         run: echo "Continuous Integration"
