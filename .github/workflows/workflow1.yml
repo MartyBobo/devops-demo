@@ -5,6 +5,7 @@ on:
   #Trigger the workflow on push from the master/main branch
   push:
     branches: [ master]
+    
 jobs:
   # Build job
   build:
