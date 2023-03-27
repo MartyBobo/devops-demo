@@ -21,7 +21,17 @@ jobs:
         uses: actions/setup-java@v3 
         with: 
           distribution: 'temurin' 
-          java-version: '17' 
+          java-version: '17'
+          #cache: 'maven'
+
+      #Set up Maven cache
+      - name: Cache Maven packages
+        #This action allows caching for dependencies
+        uses: actions/cache@v3
+        with: 
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
           
       #Run Tests 
       - name: Run Tests 
@@ -48,3 +58,13 @@ jobs:
       - name: Build with Maven 
         run: mvn -B package -DskipTests --file pom.xml 
       - run: mkdir staging && cp target/*.jar staging
+      #upload the jar artifact
+      -name: Upload JAR Artifact
+      #This uploads artifacts from your workflow
+       uses: actions/upload-artifact@v3
+       with:
+        #Set artifact name
+        name: RunnableJar
+        #From this path
+        path: staging
+    
