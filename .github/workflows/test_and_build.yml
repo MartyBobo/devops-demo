@@ -1,70 +1,67 @@
 name: CI/CD Pipeline 
-on: 
+
+on:
   #Manually trigger workflow runs 
-  workflow_dispatch: 
+  workflow_dispatch:
   #Trigger the workflow on push from the master/main branch 
-  push: 
-    branches: [ master ] 
-  
-jobs: 
+  push:
+    branches: [master]
+
+jobs:
   #Test's job 
-  tests: 
+  tests:
     name: Unit tests 
     #Run on Ubuntu using the latest version 
     runs-on: ubuntu-latest 
     #Job's steps 
-    steps: 
+    steps:
       #Check-out your repository under 
       - uses: actions/checkout@v3 
       #Set up JDK 17 
       - name: Set up JDK 17
         uses: actions/setup-java@v3 
-        with: 
+        with:
           distribution: 'temurin' 
           java-version: '17'
           #cache: 'maven'
-
       #Set up Maven cache
       - name: Cache Maven packages
         #This action allows caching for dependencies
         uses: actions/cache@v3
-        with: 
+        with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-          
       #Run Tests 
       - name: Run Tests 
         run: mvn -B test
 
-# Build jobs 
-  build: 
+  # Build jobs 
+  build:
     # depends on test's job 
     needs: tests 
     name: Build 
     #Run on Ubuntu using the latest version 
     runs-on: ubuntu-latest 
-    steps: 
+    steps:
       #Check-out your repository 
-        - uses: actions/checkout@v3 
+      - uses: actions/checkout@v3 
       #Set up JDK 17 
       - name: Set up JDK 17 
         uses: actions/setup-java@v3 
         with: 
           distribution: 'temurin' 
           java-version: '17' 
-          
       # Build the application using Maven 
       - name: Build with Maven 
         run: mvn -B package -DskipTests --file pom.xml 
       - run: mkdir staging && cp target/*.jar staging
       #upload the jar artifact
-      -name: Upload JAR Artifact
-      #This uploads artifacts from your workflow
-       uses: actions/upload-artifact@v3
-       with:
-        #Set artifact name
-        name: RunnableJar
-        #From this path
-        path: staging
-    
+      - name: Upload JAR Artifact
+        #This uploads artifacts from your workflow
+        uses: actions/upload-artifact@v3
+        with:
+          #Set artifact name
+          name: RunnableJar
+          #From this path
+          path: staging
